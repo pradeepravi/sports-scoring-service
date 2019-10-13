@@ -130,7 +130,8 @@ public class TennisScoreServiceImpl implements ScorerServiceIF {
                         Map.Entry::getKey).findFirst().orElse(null);
 
                 str = winningPlayer +" Wins!";
-            } else if(lastScores.contains(Score.ADV.toString()) || (Collections.frequency(lastScores, Score.FOURTY.toString()) == 2)) {
+            } else if((lastScores.contains(Score.ADV.toString()) && !lastScores.contains(Score.WIN.toString()) )
+                    || (Collections.frequency(lastScores, Score.FOURTY.toString()) == 2)) {
                 str = "Deuce";
             }
 
