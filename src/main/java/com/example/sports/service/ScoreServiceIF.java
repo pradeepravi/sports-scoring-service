@@ -7,7 +7,7 @@ import com.example.sports.service.exception.NotFoundException;
 
 import java.util.Map;
 
-public interface ScorerServiceIF {
+public interface ScoreServiceIF {
 
     MatchSet pointWonBy(Long matchId, String playerName) throws NotFoundException, BadRequestException, MatchAlreadyConcludedException;
 

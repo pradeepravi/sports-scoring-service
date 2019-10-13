@@ -1,6 +1,6 @@
 package com.example.sports.tennis.controller;
 
-import com.example.sports.service.ScorerServiceIF;
+import com.example.sports.service.ScoreServiceIF;
 import com.example.sports.service.data.entity.MatchSet;
 import com.example.sports.service.exception.BadRequestException;
 import com.example.sports.service.exception.MatchAlreadyConcludedException;
@@ -20,10 +20,10 @@ import java.util.Map;
 @RequestMapping(path = "/api/v1/sports/tennis/scores")
 public class TennisScorerController {
 
-    private ScorerServiceIF sportsScoreServiceIF;
+    private ScoreServiceIF sportsScoreServiceIF;
 
     @Autowired
-    public TennisScorerController(ScorerServiceIF sportsScoreServiceIF) {
+    public TennisScorerController(ScoreServiceIF sportsScoreServiceIF) {
         this.sportsScoreServiceIF = sportsScoreServiceIF;
     }
 

@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class TennisScoreServiceImpl implements ScorerServiceIF {
+public class TennisScoreServiceImpl implements ScoreServiceIF {
 
     public static final Integer WINNING_SETS_COUNT = 6;
     private SetRepository setRepository;
