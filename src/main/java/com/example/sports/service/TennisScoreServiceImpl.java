@@ -1,10 +1,10 @@
 package com.example.sports.service;
 
-import com.example.sports.service.data.entity.Match;
 import com.example.sports.service.data.entity.MatchSet;
 import com.example.sports.service.data.entity.Score;
-import com.example.sports.service.data.entity.repository.MatchRepository;
-import com.example.sports.service.data.entity.repository.SetRepository;
+import com.example.sports.service.data.entity.TennisMatch;
+import com.example.sports.service.data.repository.MatchRepository;
+import com.example.sports.service.data.repository.SetRepository;
 import com.example.sports.service.exception.BadRequestException;
 import com.example.sports.service.exception.LastSetEndedException;
 import com.example.sports.service.exception.MatchAlreadyConcludedException;
@@ -29,13 +29,23 @@ public class TennisScoreServiceImpl implements ScorerServiceIF {
         this.matchRepository = matchRepository;
     }
 
+    /**
+     * Method assigns points to player whose name is passed for the match ID
+     *
+     * @param matchId
+     * @param scoreByPlayer
+     * @return
+     * @throws NotFoundException
+     * @throws BadRequestException
+     * @throws MatchAlreadyConcludedException
+     */
     @Override
     public MatchSet pointWonBy(Long matchId, String scoreByPlayer) throws NotFoundException, BadRequestException, MatchAlreadyConcludedException {
 
-        final Match match = matchRepository.findById(matchId).orElseThrow(() -> new NotFoundException("Match not found for MatchID -"+matchId));
-        validate(match, scoreByPlayer);
+        final TennisMatch tennisMatch = matchRepository.findById(matchId).orElseThrow(() -> new NotFoundException("TennisMatch not found for MatchID -"+matchId));
+        validate(tennisMatch, scoreByPlayer);
         final MatchSet lastSet = getLastScore(matchId);
-        final MatchSet newSet = generateNewMatchSet(scoreByPlayer, match);
+        final MatchSet newSet = generateNewMatchSet(scoreByPlayer, tennisMatch);
 
         if(lastSet == null) {
             // First set
@@ -77,32 +87,32 @@ public class TennisScoreServiceImpl implements ScorerServiceIF {
         return newSet;
     }
 
-    private void validate(final Match match, final String scoreByPlayer) throws MatchAlreadyConcludedException, BadRequestException {
+    private void validate(final TennisMatch tennisMatch, final String scoreByPlayer) throws MatchAlreadyConcludedException, BadRequestException {
 
-        final List<Map<String, String>> winsCount= setRepository.findAllGroupByPointsWonBy(match.getId(), Arrays.asList(Score.WIN));
+        final List<Map<String, String>> winsCount= setRepository.findAllGroupByPointsWonBy(tennisMatch.getId(), Arrays.asList(Score.WIN));
 
         final Map<String, Integer> mapOfWins = winsCount.stream().collect(
                 Collectors.toMap(s -> s.get("player"), s -> (Integer.parseInt(s.get("wins")))));
         if(mapOfWins.containsValue(WINNING_SETS_COUNT)){
-            throw new MatchAlreadyConcludedException("Match Already Over!");
+            throw new MatchAlreadyConcludedException("TennisMatch Already Over!");
         }
 
-        if(!(match.getPlayer1().equalsIgnoreCase(scoreByPlayer) || match.getPlayer2().equalsIgnoreCase(scoreByPlayer))) {
-            throw new BadRequestException("The Player Name Passed {"+scoreByPlayer+"} is Incorrect for match ID {"+match.getId()+"}");
+        if(!(tennisMatch.getPlayer1().equalsIgnoreCase(scoreByPlayer) || tennisMatch.getPlayer2().equalsIgnoreCase(scoreByPlayer))) {
+            throw new BadRequestException("The Player Name Passed {"+scoreByPlayer+"} is Incorrect for tennisMatch ID {"+ tennisMatch.getId()+"}");
         }
     }
 
-    private MatchSet generateNewMatchSet(String scoreByPlayer, Match match) {
+    private MatchSet generateNewMatchSet(String scoreByPlayer, TennisMatch tennisMatch) {
         MatchSet newSet = new MatchSet();
         newSet.setCreatedOn(OffsetDateTime.now());
         newSet.setPointsWonBy(scoreByPlayer);
-        newSet.setMatch(match);
+        newSet.setTennisMatch(tennisMatch);
         return newSet;
     }
 
     @Override
     public Map<String, String> getScores(final Long matchId) throws NotFoundException {
-        final Match match = matchRepository.findById(matchId).orElseThrow(() -> new NotFoundException("Match not found for MatchID {"+matchId+"}"));
+        final TennisMatch tennisMatch = matchRepository.findById(matchId).orElseThrow(() -> new NotFoundException("TennisMatch not found for MatchID {"+matchId+"}"));
         final List<Map<String, String>> winsCount= setRepository.findAllGroupByPointsWonBy(matchId, Arrays.asList(Score.WIN));
 
         final Map<String, Integer> mapOfWins = winsCount.stream().collect(
@@ -118,8 +128,8 @@ public class TennisScoreServiceImpl implements ScorerServiceIF {
             final Map<String, String> lastScoresOfCurrentSet = map.stream().collect( Collectors.toMap(s -> s.get("player"), s -> (s.get("score"))));
 
             final StringBuffer returnMessage = new StringBuffer();
-            returnMessage.append(mapOfWins.getOrDefault(match.getPlayer1(), 0)).append(" - ");
-            returnMessage.append(mapOfWins.getOrDefault(match.getPlayer2(), 0)).append(", ");
+            returnMessage.append(mapOfWins.getOrDefault(tennisMatch.getPlayer1(), 0)).append(" - ");
+            returnMessage.append(mapOfWins.getOrDefault(tennisMatch.getPlayer2(), 0)).append(", ");
 
             final List<String> lastScores = new ArrayList<>(lastScoresOfCurrentSet.values());
 
@@ -139,9 +149,9 @@ public class TennisScoreServiceImpl implements ScorerServiceIF {
                 if(lastScoresOfCurrentSet.values().contains(Score.WIN.toString())) {
                     returnMessage.append("0 - 0");
                 } else {
-                    returnMessage.append(Score.valueOf(lastScoresOfCurrentSet.getOrDefault(match.getPlayer1(), Score.LOVE.toString()))
+                    returnMessage.append(Score.valueOf(lastScoresOfCurrentSet.getOrDefault(tennisMatch.getPlayer1(), Score.LOVE.toString()))
                             .getValue()).append(" - ");
-                    returnMessage.append(Score.valueOf(lastScoresOfCurrentSet.getOrDefault(match.getPlayer2(), Score.LOVE.toString()))
+                    returnMessage.append(Score.valueOf(lastScoresOfCurrentSet.getOrDefault(tennisMatch.getPlayer2(), Score.LOVE.toString()))
                             .getValue());
                 }
             } else {
@@ -149,7 +159,7 @@ public class TennisScoreServiceImpl implements ScorerServiceIF {
             }
             responseMap.put("scoreboard",returnMessage.toString());
         } else {
-            responseMap.put("scoreboard", "Match Not Started!");
+            responseMap.put("scoreboard", "TennisMatch Not Started!");
         }
         return responseMap;
     }

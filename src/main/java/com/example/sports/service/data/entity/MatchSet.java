@@ -16,7 +16,7 @@ public class MatchSet {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "match_id")
-    private Match match;
+    private TennisMatch tennisMatch;
 
     @Column(name = "set_id")
     private int setId;
@@ -39,12 +39,12 @@ public class MatchSet {
         this.id = id;
     }
 
-    public Match getMatch() {
-        return match;
+    public TennisMatch getTennisMatch() {
+        return tennisMatch;
     }
 
-    public void setMatch(Match match) {
-        this.match = match;
+    public void setTennisMatch(TennisMatch tennisMatch) {
+        this.tennisMatch = tennisMatch;
     }
 
     public int getSetId() {

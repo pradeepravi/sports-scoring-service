@@ -5,13 +5,13 @@ import java.util.Set;
 
 @Entity
 @Table(name="tennis_match")
-public class Match {
+public class TennisMatch {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
 
-    @OneToMany(mappedBy="match")
+    @OneToMany(mappedBy="tennisMatch")
     private Set<MatchSet> matchSets;
 
     @Column(name="player1")
@@ -20,8 +20,8 @@ public class Match {
     @Column(name="player2")
     private String player2;
 
-    public Match(){}
-    public Match(String player1, String player2) {
+    public TennisMatch(){}
+    public TennisMatch(String player1, String player2) {
         this.player1 = player1;
         this.player2 = player2;
     }

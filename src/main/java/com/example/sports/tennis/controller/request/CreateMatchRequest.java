@@ -1,4 +1,4 @@
-package com.example.sports.tennis.request;
+package com.example.sports.tennis.controller.request;
 
 import javax.validation.constraints.NotNull;
 
