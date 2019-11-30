@@ -3,9 +3,9 @@
 ### Spring Boot REST API Service
 #### mvn spring-boot:run
 
-### To start the application: 
-1) I have used PostGreSql as DB
-2) Run queries in db_scripts.sql under resources before you start the server
+### Before starting make sure the following is done: 
+1) PostGreSql is the DB. Set that
+2) Run queries in db_scripts.sql under resources 
 3) Following application.properties are important to configure the API
 
 spring.datasource.url=jdbc:postgresql://localhost:5432/sports-score
